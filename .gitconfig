@@ -1,0 +1,81 @@
+[user]
+	name = [TODO: YOUR NAME]
+	email = [TODO: YOUR EMAIL]
+[github]
+	user = [TODO: YOUR USERNAME]
+	token = [TODO: YOUR TOKEN]
+[merge]
+	keepBackup = false
+	#tool = bc4
+	#tool = ks
+[mergetool]
+	prompt = false
+[mergetool "bc4"]
+        cmd = bcomp -automerge -reviewconflicts $LOCAL $REMOTE $BASE $MERGED
+        trustExitCode = true
+[mergetool "ks"]
+        cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+        trustExitCode = true
+[diff]
+    #tool = bc4
+	#tool = Kaleidoscope
+[difftool]
+        prompt = false
+[difftool "bc4"]
+        cmd = bcomp $LOCAL $REMOTE | cat
+[difftool "ks"]
+        cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+[push]
+	default = upstream
+[color]
+    	ui = auto
+[color "branch"]
+    	current = yellow reverse
+    	local = yellow
+    	remote = green
+[color "diff"]
+    	meta = yellow bold
+    	frag = magenta bold
+    	old = red bold
+    	new = green bold
+	whitespace = red reverse
+[color "status"]
+    	added = yellow
+    	changed = green
+    	untracked = cyan
+[core]
+    	whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
+[rerere]
+	enabled = 1
+[alias]
+    st = status -sb
+    co = checkout
+    b  = branch
+    ba = branch -a
+    br = !sh -c 'git branch -vv | sed "s/].*/]/"' -
+    pr = remote prune origin
+    so = remote show origin
+    cp = cherry-pick
+    l = log --pretty=format:'%C(red)%h%Creset - %C(yellow)%s %Creset%C(green)(%an) %Creset%C(cyan)%ar%Creset' --no-merges
+    lr = log --pretty=format:'%C(red)%h%Creset - %C(yellow)%s %Creset%C(green)(%an) %Creset%C(cyan)%ar%Creset' --reverse
+    ls = log --stat=,80 --pretty=format:'%C(red)%h%Creset - %C(yellow)%s %Creset%C(green)(%an) %Creset%C(cyan)%ar%Creset' --no-merges
+    lg = log --graph --pretty=format:'%C(red)%h%Creset - %C(yellow)%s %Creset%C(green)(%an) %Creset%C(cyan)%ar%Creset'
+    lc = log -1 --pretty=format:'%C(red)%h%Creset - %C(yellow)%s %Creset%C(green)(%an) %Creset%C(cyan)%ar%Creset'
+    la = log -6 --pretty=format:'%C(red)%h%Creset - %C(yellow)%s %Creset%C(green)(%an) %Creset%C(cyan)%ar%Creset'
+    lga = log --graph -10 --pretty=format:'%C(red)%h%Creset - %C(yellow)%s %Creset%C(green)(%an) %Creset%C(cyan)%ar%Creset'
+    lgfp = log --graph --first-parent --pretty=format:'%C(red)%h%Creset - %C(yellow)%s %Creset%C(green)(%an) %Creset%C(cyan)%ar%Creset'
+    d = diff -w
+    dc = diff -w --cached
+    df = !sh -c 'git d $1^! -- $2' -
+    ds = diff -w --stat=,80
+    dsc = diff -w --stat=,80 --cached
+    dsf = !sh -c 'git ds $1^!' -
+    dr = !sh -c 'git d `cat .git/rebase-merge/stopped-sha`^! -- $1' -
+    rc = !sh -c 'git add . && git rebase --continue' -
+    up = !sh -c 'git fetch && git rebase -p && git new' -
+    out = push
+    new = !sh -c 'git ls $1@{1}..$1@{0} \"$@\"' -
+    nd = !sh -c 'git ds $1@{1}..$1@{0} \"$@\"' -
+    rmd = !sh -c 'git rm $(git ls-files --deleted)' -
+    ksreview = "!f() { local SHA=${1:-HEAD}; local BRANCH=${2:-master}; if [ $SHA == $BRANCH ]; then SHA=HEAD; fi; git difftool -y -t Kaleidoscope $BRANCH...$SHA; }; f"
+
